@@ -12,8 +12,8 @@ if (-not $isAdmin) {
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 
 # 目标进程名称（白名单进程不终止）
-$processNames = @("SGuardSvc64", "SGuard64", "ACE-Tray", "browser", "delta_force_launcher")#, "AclosGameProxy", "CrossProxy", "无畏契约登录器", "chrome"
-$whitelist = @("delta_force_launcher", "browser", "AclosGameProxy", "CrossProxy", "无畏契约登录器")  # 白名单进程，仅限制不终止
+$processNames = @("SGuardSvc64", "SGuard64", "ACE-Tray", "browser", "delta_force_launcher", "icreateDf")#, "AclosGameProxy", "CrossProxy", "无畏契约登录器", "chrome"
+$whitelist = @("delta_force_launcher", "browser", "AclosGameProxy", "CrossProxy", "无畏契约登录器", "icreateDf")  # 白名单进程，仅限制不终止
 
 # 目标服务名称（使用 DisplayName，需确认）
 $serviceNames = @("AntiCheatExpert Service", "AntiCheatExpert Protection")
@@ -142,16 +142,19 @@ foreach ($name in $processNames) {
 }
 
 Write-Host "`n=== 设置和关闭尝试完成 ===" -ForegroundColor Green
-Write-Host "`n一次性脚本，每次游戏启动后，先不要点 :安装ace: 弹窗的拒绝，否则无法停止进程，必须 :完全: 进入游戏，然后再点击脚本文件夹中的的 :ace kill启动.bat: 启动功能，如果卡在游戏启动界面，可以先终止进程或者重启，然后在按照前面说的步骤进行操作。`n当前版本 : 1.0.2`n脚本没有更新能力，脚本后续会有修复bug之类的，如需更新`n请访问 : https://ftnknc.lanzouo.com/b0sxutpvc`n密码:1eo8" -ForegroundColor Red
+Write-Host "一次性脚本，每次游戏启动后，先不要点 :安装预启动ace: 弹窗的拒绝，否则无法停止进程，必须 :完全: 进入游戏，然后再点击脚本文件夹中的的 :ace kill启动.bat: 启动功能，如果卡在游戏启动界面，可以先终止游戏启动器进程或者重启电脑，然后在按照前面说的步骤进行重新操作。" -ForegroundColor Red
+Write-Host "`n如果容易爆显存，可以运行脚本文件夹中的 :memreduct后台清理\64或32\memreduct.exe: 的程序，可以适当降低内存压力" -ForegroundColor Yellow
+Write-Host "`n当前版本 : 1.0.3`n脚本没有更新能力，脚本后续会有修复bug之类的，如需更新`n请访问 : https://ftnknc.lanzouo.com/b0sxutpvc`n密码:1eo8" -ForegroundColor Green
 
 # 添加选项菜单
 while ($true) {
     Write-Host "`n请选择一个选项：" -ForegroundColor Cyan
-    Write-Host "1. 运行 '更改电源计划'"
-    Write-Host "2. 运行 '反作弊启动设置'"
-    Write-Host "3. 退出"
+    Write-Host "1. 运行 '更改电源计划' -建议使用卓越性能"
+    Write-Host "2. 运行 '反作弊启动设置' -没啥大用，但必须有"
+    Write-Host "3. 运行 '优化处理器性能与软件进程优先级' -集成了其他up的优化，建议尝试"
+    Write-Host "4. 退出"
 
-    $choice = Read-Host "请输入1、2或3"
+    $choice = Read-Host "请输入数字运行脚本，或者直接点击右上角关闭脚本"
 
     switch ($choice) {
         "1" {
@@ -183,12 +186,26 @@ while ($true) {
             }
         }
         "3" {
+            # 运行 '优化处理器性能与软件进程优先级.ps1'
+            $antiCheatScriptPath = Join-Path -Path $scriptDir -ChildPath "优化处理器性能与软件进程优先级.ps1"
+            if (Test-Path -Path $antiCheatScriptPath) {
+                try {
+                    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$antiCheatScriptPath`"" -Verb RunAs -ErrorAction Stop
+                    Write-Host "已运行 '优化处理器性能与软件进程优先级'" -ForegroundColor Green
+                } catch {
+                    Write-Host "无法运行 '优化处理器性能与软件进程优先级': $($_.Exception.Message)`n请确认文件路径或权限。" -ForegroundColor Yellow
+                }
+            } else {
+                Write-Host "未找到 '优化处理器性能与软件进程优先级' 文件: $antiCheatScriptPath`n请确认文件是否存在于脚本目录中。" -ForegroundColor Yellow
+            }
+        }
+        "4" {
             # 退出脚本
             Write-Host "退出脚本" -ForegroundColor Cyan
             exit
         }
         default {
-            Write-Host "无效的输入，请输入1、2或3" -ForegroundColor Red
+            Write-Host "无效的输入，请输入数字" -ForegroundColor Red
         }
     }
 }

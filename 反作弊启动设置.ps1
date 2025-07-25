@@ -19,7 +19,7 @@ $services = @(
 # 菜单界面
 function Show-Menu {
     Clear-Host
-    Write-Host "优先设置为禁用 (Disabled)" -ForegroundColor Red
+    Write-Host "优先设置为禁用 (Disabled)，如果出现无法正常启动游戏就设置回手动启动 (Manual)" -ForegroundColor Red
     Write-Host ""
     Write-Host ""
     Write-Host "===== 反作弊服务启动类型设置 =====" -ForegroundColor Cyan
